@@ -1,0 +1,25 @@
+name: multi-node-hadoop
+
+services:
+  hadoop-namenode:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      additional_contexts:
+        - downloads=/mnt/c/Users/temmyzeus/Downloads
+    image: multi-node-hadoop
+    ports:
+      - "9870:9870"
+    entrypoint: [ "./entrypoint.sh", "namenode" ]
+  hadoop-resource-manager:
+    depends_on:
+      - hadoop-namenode
+    image: multi-node-hadoop
+    ports:
+      - "8088:8088"
+    entrypoint: [ "./entrypoint.sh", "resourcemanager" ]
+  hadoop-worker: # For the HDFS Datanode & Yarn  NodeManager
+    image: multi-node-hadoop
+    entrypoint: [ "./entrypoint.sh", "worker" ]
+    depends_on:
+      - hadoop-namenode
