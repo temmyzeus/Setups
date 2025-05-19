@@ -21,11 +21,15 @@
         <name>dfs.replication</name>
         <value>3</value>
     </property>
+    <property>
+        <name>dfs.permissions.enabled</name>
+        <value>false</value>
+    </property>
 
     <!-- NameNode Configurations Start -->
     <property>
         <name>dfs.namenode.name.dir</name>
-        <value>file:///home/namenode_name_dir</value>
+        <value>file:///opt/hadoop/data/nameNode/cluster</value>
     </property>
     <property>
         <name>dfs.blocksize</name>
@@ -40,7 +44,7 @@
     <!-- DataNode Configurations Start -->
     <property>
         <name>dfs.datanode.data.dir</name>
-        <value>file:///home/datanode_data_dir</value>
+        <value>file:///opt/hadoop/data/dataNode/cluster</value>
     </property>
     <!-- DataNode Configurations End -->
 </configuration>

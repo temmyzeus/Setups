@@ -1,25 +1,28 @@
 name: multi-node-hadoop
 
 services:
-  hadoop-namenode:
+  spark-yarn-master:
     build: 
       context: .
       dockerfile: Dockerfile
       additional_contexts:
         - downloads=/mnt/c/Users/temmyzeus/Downloads
-    image: multi-node-hadoop
+    image: spark-yarn-image
     ports:
+      - "9000:9000"
       - "9870:9870"
-    entrypoint: [ "./entrypoint.sh", "namenode" ]
-  hadoop-resource-manager:
-    depends_on:
-      - hadoop-namenode
-    image: multi-node-hadoop
-    ports:
       - "8088:8088"
-    entrypoint: [ "./entrypoint.sh", "resourcemanager" ]
-  hadoop-worker: # For the HDFS Datanode & Yarn  NodeManager
-    image: multi-node-hadoop
+      - "7077:7077"
+    entrypoint: [ "./entrypoint.sh", "master" ]
+  spark-yarn-worker: # For the HDFS Datanode & Yarn  NodeManager
+    image: spark-yarn-image
     entrypoint: [ "./entrypoint.sh", "worker" ]
     depends_on:
-      - hadoop-namenode
+      - spark-yarn-master
+  spark-history-server:
+    image: spark-yarn-image
+    entrypoint: [ "./entrypoint.sh", "history" ]
+    depends_on:
+      - spark-yarn-master
+    ports:
+      - "18080:18080"
