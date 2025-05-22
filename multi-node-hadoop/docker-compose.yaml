@@ -26,3 +26,13 @@ services:
       - spark-yarn-master
     ports:
       - "18080:18080"
+  notebook:
+    image: spark-yarn-image
+    entrypoint: [ "./entrypoint.sh", "notebook" ]
+    depends_on:
+      - spark-yarn-master
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jupyter
+      - ./data:/home/data

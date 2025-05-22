@@ -49,6 +49,8 @@ elif [ "$SPARK_WORKLOAD" == "history" ]; then
 
   # start the spark history server
   start-history-server.sh
+elif [ "$SPARK_WORKLOAD" == "notebook" ]; then
+    jupyter lab --ip=0.0.0.0 --no-browser --NotebookApp.token='' --notebook-dir=/home/jupyter --port=8888 --allow-root
 fi
 
 tail -f /dev/null

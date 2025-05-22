@@ -11,6 +11,7 @@ RUN apt-get update && \
     pdsh \
     nano \
     python3.12 \
+    python3-pip \
     openjdk-11-jdk && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -43,9 +44,8 @@ RUN rm ${HADOOP_HOME}/hadoop-3.4.1.tar.gz ${SPARK_HOME}/spark-3.5.5-bin-hadoop3-
 
 WORKDIR ${SPARK_HOME}
 
-# COPY requirements.txt .
-# RUN apt-get install python3-pip
-# RUN pip3 install -r requirements.txt
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
 
 COPY set-hadoop-env.sh /etc/profile.d/set-hadoop-env.sh
 
@@ -78,7 +78,7 @@ COPY etc/hadoop/mapred-site.xml ${HADOOP_CONF_DIR}/mapred-site.xml
 COPY conf/spark-env.sh ${SPARK_HOME}/conf/spark-env.sh
 COPY conf/spark-defaults.conf ${SPARK_HOME}/conf/spark-defaults.conf
 
-ENV PYTHONPATH=${SPARK_HOME}/python:$PYTHONPATH
+ENV PYTHONPATH=${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.9.7-src.zip:$PYTHONPATH
 
 RUN chmod u+x ${SPARK_HOME}/conf/spark-env.sh
 
@@ -87,3 +87,10 @@ EXPOSE 7077 8080
 COPY entrypoint.sh entrypoint.sh
 
 RUN chmod u+x entrypoint.sh
+
+# ---------------------- notebook stage ----------------------
+RUN pip install jupyterlab
+
+RUN mkdir -p /home/jupyter
+
+ENV JUPYTER_ALLOW_INSECURE_WRITES=1
